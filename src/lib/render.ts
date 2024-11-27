@@ -1,24 +1,15 @@
-import type { Component, ComponentProps, SvelteComponent } from "svelte";
-import { convert } from "html-to-text";
-import { render } from "svelte/server";
+import { convert } from 'html-to-text';
+import type { ComponentProps, Component, SvelteComponent } from 'svelte';
+import { render as renderServer } from 'svelte/server';
 
-const renderAsPlainText = (markup: string) => {
-  return convert(markup, {
-    selectors: [
-      { selector: "img", format: "skip" },
-      { selector: "#__svelte-email-preview", format: "skip" },
-    ],
-  });
-};
-
-export const renderEmail = async <
+export const render = async <
   Comp extends SvelteComponent<any> | Component<any>,
   Props extends ComponentProps<Comp> = ComponentProps<Comp>,
 >(
   component: Comp,
   props?: Props,
 ) => {
-  const rendered = render(component as any, {
+  const rendered = renderServer(component as any, {
     props,
   });
 
@@ -33,4 +24,13 @@ export const renderEmail = async <
     html,
     text,
   };
+};
+
+const renderAsPlainText = (markup: string) => {
+	return convert(markup, {
+		selectors: [
+			{ selector: 'img', format: 'skip' },
+			{ selector: '#__svelte-email-preview', format: 'skip' }
+		]
+	});
 };
